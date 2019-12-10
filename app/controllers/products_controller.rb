@@ -2,7 +2,9 @@
 
 # Description for Products controller
 class ProductsController < ApplicationController
+  load_and_authorize_resource
   before_action :set_product, only: %i[show edit update destroy]
+  before_action :authenticate_user!, except: %i[index show]
 
   # GET /products
   def index
@@ -23,7 +25,7 @@ class ProductsController < ApplicationController
   # POST /products
   def create
     @product = Product.new(product_params)
-
+    @product.user = current_user
     if @product.save
       redirect_to @product, notice: 'Product was successfully created.'
     else
